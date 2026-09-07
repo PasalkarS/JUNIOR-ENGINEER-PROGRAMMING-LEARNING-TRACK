@@ -15,7 +15,7 @@ For every module, I follow a four-step progression to make sure concepts stick:
 
 | Skill | Learned | Project Ready | Independent |
 | :--- | :---: | :---: | :---: |
-| [01. Python Fundamentals](01_python_fundamentals/) | [x] | [ ] | [ ] |
+| [01. Python Fundamentals](01_python_fundamentals/) | [x] | [x] | [x] |
 | [02. OOP & Modular Design](02_oop_modular_design/) | [ ] | [ ] | [ ] |
 | [03. Pandas & Excel](03_pandas_excel/) | [ ] | [ ] | [ ] |
 | [04. SQLite](04_sqlite/) | [ ] | [ ] | [ ] |

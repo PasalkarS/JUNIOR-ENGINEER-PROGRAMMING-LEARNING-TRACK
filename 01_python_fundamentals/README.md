@@ -5,4 +5,4 @@ Core Python syntax, data structures, control flow, functions, and idiomatic scri
 ## Progress
 - [x] Learned
 - [x] Project Ready
-- [ ] Independent
+- [x] Independent

@@ -1,1 +1,4 @@
 # Dependencies get added per module as I go
+
+# 01_python_fundamentals & 06_pytest_testing
+pytest>=8.0.0
