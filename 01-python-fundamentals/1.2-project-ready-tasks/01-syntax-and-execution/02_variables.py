@@ -1,5 +1,4 @@
 # 02 - Variables and Data Types
-# Shows declaring variables of different types.
 
 item_name = "Laptop"        # str
 quantity = 3                # int
