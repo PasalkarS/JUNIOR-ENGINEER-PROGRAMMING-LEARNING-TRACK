@@ -1,0 +1,9 @@
+order_id,date,customer,product_id,quantity,region
+1001,2026-09-01,acme corp,P100,2,North
+1002,2026-09-01,Globex,P200,5,South
+1003,2026-09-02,  Initech ,P300,1,North
+1004,2026-09-02,Umbrella Corp,P100,3,East
+1005,2026-09-03,Acme Corp,P200,4,West
+1006,2026-09-03,Soylent Corp,P300,-1,North
+1007,2026-09-04,Globex,P100,10,South
+1001,2026-09-01,acme corp,P100,2,North
