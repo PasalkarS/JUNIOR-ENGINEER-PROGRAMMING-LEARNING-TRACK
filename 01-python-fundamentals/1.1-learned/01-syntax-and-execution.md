@@ -1,4 +1,3 @@
-
 # 01 — Syntax and Execution
 
 ## 1. Python Syntax
