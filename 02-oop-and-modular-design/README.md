@@ -4,7 +4,7 @@ Welcome to **Module 02: OOP and Modular Design** of the Junior Engineer Programm
 
 ## Learning Structure
 
-- `2.1-learned/`: 6 in-depth `.docx` reference guides covering classes/objects, encapsulation, inheritance/composition, abstraction, modular architecture, and SOLID design principles.
+- `2.1-learned/`: 6 in-depth `.md` reference guides covering classes/objects, encapsulation, inheritance/composition, abstraction, modular architecture, and SOLID design principles.
 - `2.2-project-ready-tasks/`: 6 progressive implementation directories modeling customer invoices, validated bank accounts, notifications, abstract repositories, and clean refactoring.
 - `2.3-independent-project-order-management-service/`: Fully modular Order Management application with dependency injection, automated pytest tests, and documentation.
 
