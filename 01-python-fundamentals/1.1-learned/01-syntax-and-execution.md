@@ -3,7 +3,19 @@
 > **Module 01: Python Fundamentals | Topic 01**
 
 
+1. Python Syntax
+What it is
 
+Python syntax is the set of rules used to write Python code.
+
+Important Points
+Python syntax is simple and easy to read.
+Python is case-sensitive.
+Indentation is important in Python.
+Most statements do not need ; at the end.
+Incorrect syntax gives a SyntaxError.
+Basic Syntax
+print("Hello World")
 ## 1. Learning Outcomes
 
 - **Execute Scripts:** Run Python scripts via CLI and understand interpreter mechanics.
