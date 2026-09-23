@@ -1,5 +1,4 @@
 # 03 - Basic Arithmetic
-# Demonstrates addition, subtraction, multiplication, and division.
 
 a = 20
 b = 6
