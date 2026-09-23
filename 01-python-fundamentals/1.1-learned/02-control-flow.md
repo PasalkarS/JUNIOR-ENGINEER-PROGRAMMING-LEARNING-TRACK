@@ -1,78 +1,152 @@
-# Control Flow & Branching Logic
+02 — Control Flow
+1. if
+What it is
 
-> **Module 01: Python Fundamentals | Topic 02**
+if is used to execute a block of code when a condition is True.
 
+Important Points
+Checks a condition.
+Runs the code only when the condition is True.
+Uses : after the condition.
+The code inside if must be indented.
+Basic Syntax
+if condition:
+    # code
+2. elif
+What it is
 
+elif means "else if" and is used to check another condition when the previous condition is False.
 
-## 1. Learning Outcomes
+Important Points
+Can have multiple elif statements.
+Python checks conditions from top to bottom.
+Only the first matching condition is executed.
+elif must come after if.
+Basic Syntax
+if condition:
+    # code
+elif condition:
+    # code
+3. else
+What it is
 
-- **Conditionals:** Construct clean, non-redundant if-elif-else branching.
-- **Iteration:** Master for loops with range(), enumerate(), and while loops.
-- **Loop Control:** Use break and continue purposefully to control execution flow.
-- **Defensive Flow:** Avoid infinite loops and off-by-one errors in boundary logic.
+else is used to execute code when all previous conditions are False.
 
-## 2. Key Syntax & Concepts
-
-
-### Branching: if / elif / else
-
-Python evaluates conditions sequentially. Order conditions from most specific to least specific:
-
-```python
-score = 85
-if score >= 90:
-    grade = 'A'
-elif score >= 80:
-    grade = 'B'
+Important Points
+else does not have a condition.
+It must come after if or elif.
+Only one else can be used in a condition block.
+else is optional.
+Basic Syntax
+if condition:
+    # code
 else:
-    grade = 'C'
+    # code
+4. Nested Conditions
+What it is
 
-# Conditional expression (ternary)
-status = 'Pass' if score >= 60 else 'Fail'
-```
+A nested condition is an if statement placed inside another if statement.
 
+Important Points
+Used when one condition depends on another.
+Nested blocks must be properly indented.
+Too many nested conditions can make code difficult to read.
+if, elif, and else can be nested.
+Basic Syntax
+if condition:
+    if condition:
+        # code
+5. for Loop
+What it is
 
-### Loops: for and while
+A for loop is used to repeat code for each item in a sequence or collection.
 
-Use `for` when iterating over known ranges or sequences. Use `while` for condition-driven cycles:
+Important Points
+Commonly used with lists, strings, tuples, and range().
+Runs once for each item.
+The loop variable stores the current item.
+The loop stops after all items have been processed.
+Basic Syntax
+for item in collection:
+    # code
+6. while Loop
+What it is
 
-```python
-# range(start, stop, step) - note: stop is exclusive
-for i in range(1, 6, 2):
-    print(i)  # 1, 3, 5
+A while loop repeats code as long as a condition is True.
 
-# while loop with guard condition
-count = 3
-while count > 0:
-    print(count)
-    count -= 1
-```
+Important Points
+Checks the condition before each iteration.
+The loop stops when the condition becomes False.
+Make sure the condition can eventually become False.
+Useful when the number of repetitions is not known beforehand.
+Basic Syntax
+while condition:
+    # code
+7. range()
+What it is
 
+range() generates a sequence of numbers, commonly used with for loops.
 
-### Loop Control: break and continue
+Important Points
+range(stop) starts from 0.
+range(start, stop) starts from start.
+The stop value is not included.
+range(start, stop, step) allows you to specify the step.
+Basic Syntax
+range(stop)
+range(start, stop)
+range(start, stop, step)
+8. break
+What it is
 
-```python
-for num in [1, 2, 3, 4, 5]:
-    if num == 2:
-        continue  # skip 2
-    if num == 4:
-        break     # stop at 4
-    print(num)    # prints 1, 3
-```
+break is used to immediately stop a loop.
 
+Important Points
+Stops the current loop.
+Execution continues with the code after the loop.
+Can be used in both for and while loops.
+Useful when the required result is found before the loop finishes.
+Basic Syntax
+for item in collection:
+    if condition:
+        break
+9. continue
+What it is
 
-## 3. Common Mistakes & Gotchas
+continue skips the current iteration and moves to the next iteration of the loop.
 
-- **Off-By-One with range():** range(1, 5) generates [1, 2, 3, 4], NOT up to 5. The stop parameter is always exclusive.
-- **Infinite While Loops:** Forgetting to update the loop counter or sentinel inside the while block causes an infinite loop.
-- **Modifying Lists While Iterating:** Never remove items from a list while iterating over it directly. Iterate over a slice or copy instead: `for x in my_list[:]:`.
+Important Points
+Does not stop the entire loop.
+Only skips the current iteration.
+Can be used with for and while loops.
+Useful when certain values should be skipped.
+Basic Syntax
+for item in collection:
+    if condition:
+        continue
+10. Conditional Expressions
+What it is
 
-## 4. Practice Tasks
+A conditional expression is a short way to write a simple if-else condition in one line.
 
-- **Task 1:** Implement a CLI menu loop that displays 4 options and repeats until the user chooses 'Exit'.
-- **Task 2:** Write a prime number checker for integers between 2 and 50 using nested loops and break.
+Important Points
+Also called the ternary operator.
+Used for simple conditions.
+Makes short assignments more compact.
+Avoid using it for complex conditions.
+Basic Syntax
+value = value_if_true if condition else value_if_false
+11. Nested Loops
+What it is
 
-## 5. Self-Check Questions
+A nested loop is a loop placed inside another loop.
 
-- **Q1:** What values does range(5, 0, -1) yield?
-- **Q2:** When should you prefer a for loop over a while loop?
+Important Points
+The inner loop runs completely for each iteration of the outer loop.
+Can be used with both for and while loops.
+Commonly used for patterns and working with tables or grids.
+Proper indentation is important.
+Basic Syntax
+for i in range(3):
+    for j in range(3):
+        # code
