@@ -3,6 +3,6 @@
 Core Python syntax, data structures, control flow, functions, and idiomatic scripting practices.
 
 ## Progress
-- [x] Learned
-- [x] Project Ready
-- [x] Independent
+- [] Learned
+- [] Project Ready
+- [] Independent
