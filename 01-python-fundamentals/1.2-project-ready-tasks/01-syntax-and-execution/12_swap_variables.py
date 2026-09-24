@@ -1,10 +1,12 @@
-# 12 - Swapping Variables
-# Shows traditional temp-variable swap and Pythonic tuple unpacking.
+a = 10
+b = 20
 
-x = 10
-y = 20
-print(f"Before: x={x}, y={y}")
+print("Before swapping:")
+print("a:", a)
+print("b:", b)
 
-# Pythonic tuple swap
-x, y = y, x
-print(f"After:  x={x}, y={y}")
+a, b = b, a
+
+print("After swapping:")
+print("a:", a)
+print("b:", b)
