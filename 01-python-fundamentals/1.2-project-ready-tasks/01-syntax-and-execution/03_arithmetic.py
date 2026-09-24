@@ -1,12 +1,7 @@
-# 03 - Basic Arithmetic
+num1 = 10
+num2 = 5
 
-a = 20
-b = 6
-
-print("Addition:", a + b)
-print("Subtraction:", a - b)
-print("Multiplication:", a * b)
-print("Float Division:", a / b)
-print("Floor Division:", a // b)
-print("Modulo (Remainder):", a % b)
-print("Exponent (Power):", a ** 2)
+print("Addition:", num1 + num2)
+print("Subtraction:", num1 - num2)
+print("Multiplication:", num1 * num2)
+print("Division:", num1 / num2)
