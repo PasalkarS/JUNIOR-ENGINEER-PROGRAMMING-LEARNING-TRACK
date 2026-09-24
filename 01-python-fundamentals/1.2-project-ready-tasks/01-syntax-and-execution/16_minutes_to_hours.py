@@ -1,9 +1,7 @@
-# 16 - Minutes to Hours and Minutes
-# Breaks total minutes into hours + leftover minutes.
+minutes = int(input("Enter minutes: "))
 
-total_minutes = 275
+hours = minutes // 60
+remaining_minutes = minutes % 60
 
-hours = total_minutes // 60
-minutes = total_minutes % 60
-
-print(f"{total_minutes} minutes = {hours} hour(s) and {minutes} minute(s)")
+print("Hours:", hours)
+print("Minutes:", remaining_minutes)
