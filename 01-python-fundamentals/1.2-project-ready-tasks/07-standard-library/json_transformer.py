@@ -1,29 +1,23 @@
-# JSON Transformer
-# Ingests, modifies, and serializes JSON configuration files.
-
 import json
+from pathlib import Path
 
-RAW_CONFIG_JSON = """{
-    "app_name": "MetricsService",
-    "version": "1.0.0",
-    "database": {
-        "host": "localhost",
-        "port": 5432,
-        "name": "metrics_db"
-    },
-    "features": ["logging", "rate_limiting"]
-}"""
+file = Path("data.json")
 
-def update_config(json_str: str, new_features: list[str]) -> str:
-    data = json.loads(json_str)
-    # Add new features without duplicates
-    current_features = set(data.get("features", []))
-    current_features.update(new_features)
-    data["features"] = sorted(current_features)
-    data["version"] = "1.1.0"
-    return json.dumps(data, indent=2)
+try:
+    data = json.loads(file.read_text(encoding="utf-8"))
 
-if __name__ == "__main__":
-    updated = update_config(RAW_CONFIG_JSON, ["caching", "metrics_exporter"])
-    print("Updated JSON Configuration:")
-    print(updated)
+    for item in data:
+        item["name"] = item["name"].upper()
+
+    file.write_text(
+        json.dumps(data, indent=4),
+        encoding="utf-8"
+    )
+
+    print("JSON file updated successfully.")
+
+except FileNotFoundError:
+    print("JSON file not found.")
+
+except json.JSONDecodeError:
+    print("Invalid JSON file.")
