@@ -1,8 +1,8 @@
-# 13 - Quotient and Remainder
-# Uses divmod() to compute both at once.
+num1 = 17
+num2 = 5
 
-dividend = 47
-divisor = 5
+quotient = num1 // num2
+remainder = num1 % num2
 
-quotient, remainder = divmod(dividend, divisor)
-print(f"{dividend} / {divisor} = Quotient: {quotient}, Remainder: {remainder}")
+print("Quotient:", quotient)
+print("Remainder:", remainder)
