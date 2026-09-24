@@ -1,44 +1,228 @@
-# Encapsulation & State Validation
+# 02 — Encapsulation
 
-> **Module 02: OOP and Modular Design | Topic 02**
+## 1. Public Attributes
 
+### What it is
 
+Public attributes can be accessed directly from outside the class.
 
-## 1. Learning Outcomes
+### Important Points
 
-- **Data Protection:** Protect internal object state from illegal direct modifications.
-- **Properties:** Use `@property` and `@setter` to provide clean validation.
-- **Conventions:** Understand protected (`_single_underscore`) vs private (`__double_underscore`) naming.
-- **Invariants:** Maintain domain rules across the entire lifecycle of an object.
+* Public attributes normally have no special naming convention.
+* They can be read or changed directly.
+* They are simple to use.
+* Example: `student.name`
 
-## 2. Key Syntax & Concepts
+### Basic Syntax
 
 ```python
-class Employee:
-    def __init__(self, emp_id: str, salary: float):
-        self.emp_id = emp_id
-        self._salary = salary  # Internal state
+class Student:
+    def __init__(self, name):
+        self.name = name
 
-    @property
-    def salary(self) -> float:
-        """Getter method for salary."""
-        return self._salary
+student = Student("Sam")
 
-    @salary.setter
-    def salary(self, value: float) -> None:
-        """Setter method enforcing business validation."""
-        if value < 0:
-            raise ValueError('Salary cannot be negative')
-        self._salary = value
+print(student.name)
+student.name = "Alex"
 ```
 
+---
 
-## 3. Common Mistakes & Gotchas
+## 2. Naming Conventions
 
-- **Overusing Double Underscores:** `__name` invokes Python name mangling (`_Class__name`). In Python, single underscore `_name` is standard convention for internal attributes.
-- **Infinite Recursion in Setter:** Assigning `self.salary = value` inside `salary.setter` causes infinite recursion. Always assign to `self._salary`.
+### What it is
 
-## 4. Practice Tasks & Self-Check
+Naming conventions are rules used to make class attributes and methods easier to understand.
 
-- **Task 1:** Create a Product entity with a validated `price` (> 0) and `discount` (0-100%).
-- **Q1:** Why are Python properties preferred over Java-style `getSalary()` and `setSalary()`?
+### Important Points
+
+* Normal attributes use names like `name` or `age`.
+* A single underscore `_name` indicates an internal/protected-style attribute.
+* Double underscore `__name` triggers name mangling.
+* Naming conventions communicate how an attribute is intended to be used.
+
+### Basic Syntax
+
+```python
+class Student:
+    def __init__(self):
+        self.name = "Sam"
+        self._age = 25
+        self.__password = "1234"
+```
+
+---
+
+## 3. Protected-Style Attributes
+
+### What it is
+
+An attribute beginning with `_` is treated as an internal or protected-style attribute by convention.
+
+### Important Points
+
+* Python does not strictly enforce protected access.
+* `_name` tells other programmers that the attribute is intended for internal use.
+* It can still be accessed from outside the class.
+* It is commonly used when subclasses may need access.
+
+### Basic Syntax
+
+```python
+class Student:
+    def __init__(self):
+        self._age = 25
+
+student = Student()
+
+print(student._age)
+```
+
+---
+
+## 4. Private Name Mangling
+
+### What it is
+
+An attribute beginning with `__` uses Python's name-mangling mechanism to make direct accidental access harder.
+
+### Important Points
+
+* `__name` is changed internally by Python.
+* It helps avoid accidental access or name conflicts.
+* It is not true security or strict privacy.
+* It is mainly useful for protecting internal implementation details.
+
+### Basic Syntax
+
+```python
+class Student:
+    def __init__(self):
+        self.__age = 25
+
+student = Student()
+```
+
+---
+
+## 5. Properties
+
+### What it is
+
+A property allows a method to be accessed like an attribute.
+
+### Important Points
+
+* Properties are created using `@property`.
+* They allow controlled access to object data.
+* Validation can be added before returning or changing values.
+* They help keep the class interface simple.
+
+### Basic Syntax
+
+```python
+class Student:
+    def __init__(self, age):
+        self._age = age
+
+    @property
+    def age(self):
+        return self._age
+```
+
+---
+
+## 6. Getters and Setters
+
+### What it is
+
+Getters are used to read values, while setters are used to change values in a controlled way.
+
+### Important Points
+
+* A getter returns an attribute value.
+* A setter changes an attribute value.
+* Setters can validate new values.
+* In Python, properties are commonly used for getters and setters.
+
+### Basic Syntax
+
+```python
+class Student:
+    def __init__(self, age):
+        self._age = age
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        self._age = value
+```
+
+---
+
+## 7. Validation
+
+### What it is
+
+Validation checks whether a value is valid before storing it in an object.
+
+### Important Points
+
+* Validation can be performed inside setters.
+* Invalid values can raise exceptions.
+* It prevents objects from containing incorrect data.
+* Validation rules should match the requirements of the class.
+
+### Basic Syntax
+
+```python
+class Student:
+    def __init__(self, age):
+        self._age = age
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        if value < 0:
+            raise ValueError("Age cannot be negative")
+        self._age = value
+```
+
+---
+
+## 8. Controlling Object State
+
+### What it is
+
+Controlling object state means deciding how an object's data can be read or changed.
+
+### Important Points
+
+* Do not allow invalid values into important attributes.
+* Use properties when controlled access is needed.
+* Use validation before changing object data.
+* Internal attributes can be hidden behind methods or properties.
+* Encapsulation keeps an object's data and rules together.
+
+### Basic Syntax
+
+```python
+class BankAccount:
+    def __init__(self, balance):
+        self._balance = balance
+
+    @property
+    def balance(self):
+        return self._balance
+
+    def deposit(self, amount):
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+        self._balance += amount
+```
