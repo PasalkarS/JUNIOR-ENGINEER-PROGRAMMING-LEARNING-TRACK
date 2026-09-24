@@ -1,3 +1,1 @@
-# 01 - Hello World
-
-print("Hello, Samiksha!")
+print("Hello, World!")
