@@ -1,45 +1,119 @@
-# Software Design Principles (SOLID, DRY, KISS)
+# 06 — Design Principles
 
-> **Module 02: OOP and Modular Design | Topic 06**
+## 1. Single Responsibility Principle (SRP)
 
+### What it is
 
+A class or function should have one main responsibility or one clear job.
 
-## 1. Learning Outcomes
+### Important Points
 
-- **Single Responsibility:** Ensure every class has only one reason to change.
-- **Open / Closed:** Design systems open for extension but closed for modification.
-- **Dependency Inversion:** Inject dependencies rather than instantiating hardcoded concrete classes.
-- **KISS & DRY:** Keep solutions simple and eliminate duplicate logic systematically.
+* Keep each class focused on one task.
+* Avoid putting unrelated functionality together.
+* Smaller responsibilities make code easier to understand.
+* Makes testing and maintenance easier.
 
-## 2. SOLID Principles in Practice
+---
 
+## 2. Open/Closed Principle (OCP)
 
-| Principle | Meaning | Bad Example vs Improved Example |
-| --- | --- | --- |
-| SRP | Single Responsibility | Bad: Order class saves to CSV and sends emails. Good: Order holds state; OrderRepository saves; Mailer sends. |
-| OCP | Open/Closed | Bad: if/elif checks for every new payment type. Good: Polymorphic PaymentMethod interface. |
-| LSP | Liskov Substitution | Bad: Subclass throws NotImplementedError. Good: Subclass fulfills parent contract. |
-| ISP | Interface Segregation | Bad: Huge interface with 20 methods. Good: Small focused interfaces. |
-| DIP | Dependency Inversion | Bad: Service hardcodes `self.repo = SqlRepo()`. Good: Pass repo into `__init__`. |
+### What it is
 
+Code should be open for adding new functionality but should not need frequent changes to existing working code.
 
+### Important Points
 
-## 3. Code Example: Dependency Inversion
+* New features should be easy to add.
+* Avoid changing the same code repeatedly for new requirements.
+* Separate different behaviors when possible.
+* Helps reduce the chance of breaking existing functionality.
 
-```python
-class OrderService:
-    # Good: Dependency Injection allows swapping storage without touching this service!
-    def __init__(self, repository, notification_service):
-        self.repository = repository
-        self.notification_service = notification_service
+---
 
-    def place_order(self, order):
-        self.repository.save(order)
-        self.notification_service.notify(order)
-```
+## 3. Liskov Substitution Principle (LSP)
 
+### What it is
 
-## 4. Practice Tasks & Self-Check
+A child class should be able to replace its parent class without causing unexpected problems.
 
-- **Task 1:** Take an all-in-one UserManager class and decompose it into User model, PasswordHasher, and UserRepository.
-- **Q1:** What is the primary danger of violating the Single Responsibility Principle?
+### Important Points
+
+* Use inheritance only when the relationship makes sense.
+* Child classes should follow the expected behavior of the parent.
+* A child class should not remove important behavior expected from the parent.
+* If inheritance does not fit, composition may be a better choice.
+
+---
+
+## 4. Interface Segregation Principle (ISP)
+
+### What it is
+
+A class should not be forced to depend on methods or functionality that it does not need.
+
+### Important Points
+
+* Keep interfaces small and focused.
+* Group related functionality together.
+* Avoid creating one large interface for unrelated operations.
+* Classes should use only the functionality they actually need.
+
+---
+
+## 5. Dependency Inversion Principle (DIP)
+
+### What it is
+
+High-level code should depend on general interfaces or abstractions instead of directly depending on specific implementations.
+
+### Important Points
+
+* Avoid tightly connecting classes.
+* Pass dependencies into classes when possible.
+* Different implementations should be replaceable.
+* Makes code easier to change and test.
+
+---
+
+## 6. DRY — Don't Repeat Yourself
+
+### What it is
+
+DRY means avoiding unnecessary repetition of the same code or logic.
+
+### Important Points
+
+* Put repeated logic into reusable functions or classes.
+* Avoid copying the same code into multiple places.
+* Changes become easier when logic exists in one place.
+* Do not remove every small repetition if doing so makes the code more complicated.
+
+---
+
+## 7. KISS — Keep It Simple
+
+### What it is
+
+KISS means keeping code as simple as possible while still solving the problem correctly.
+
+### Important Points
+
+* Prefer simple solutions over unnecessary complexity.
+* Use clear names for variables, functions, and classes.
+* Avoid features that are not required.
+* Simple code is easier to understand and maintain.
+
+---
+
+## 8. Separation of Concerns
+
+### What it is
+
+Separation of concerns means keeping different responsibilities in separate parts of a program.
+
+### Important Points
+
+* Keep user-interface logic separate from business logic.
+* Keep database or file operations separate from business logic.
+* Use different functions, classes, or modules for different responsibilities.
+* Makes code easier to understand, test, and modify.
