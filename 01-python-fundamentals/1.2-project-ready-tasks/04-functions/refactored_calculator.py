@@ -1,33 +1,14 @@
-# Modular Calculator with Functions
-# Refactors procedural calculator into clean, testable functions.
+from math_utils import add, subtract, multiply, divide
 
-def add(x: float, y: float) -> float:
-    return x + y
 
-def subtract(x: float, y: float) -> float:
-    return x - y
+def calculator(num1, num2):
+    print("Addition:", add(num1, num2))
+    print("Subtraction:", subtract(num1, num2))
+    print("Multiplication:", multiply(num1, num2))
+    print("Division:", divide(num1, num2))
 
-def multiply(x: float, y: float) -> float:
-    return x * y
 
-def divide(x: float, y: float) -> float:
-    if y == 0:
-        raise ZeroDivisionError("Division by zero is not permitted.")
-    return x / y
+number1 = float(input("Enter first number: "))
+number2 = float(input("Enter second number: "))
 
-OPERATIONS = {
-    "+": add,
-    "-": subtract,
-    "*": multiply,
-    "/": divide,
-}
-
-def calculate(op: str, num1: float, num2: float) -> float:
-    if op not in OPERATIONS:
-        raise ValueError(f"Unsupported operator: '{op}'")
-    return OPERATIONS[op](num1, num2)
-
-if __name__ == "__main__":
-    print("10 + 5 =", calculate("+", 10, 5))
-    print("10 / 2 =", calculate("/", 10, 2))
-    print("7 * 8  =", calculate("*", 7, 8))
+calculator(number1, number2)
