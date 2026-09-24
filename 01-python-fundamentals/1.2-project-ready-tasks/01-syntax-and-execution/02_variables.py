@@ -1,11 +1,9 @@
-# 02 - Variables and Data Types
-
-item = "Laptop"
-quantity = 3
-price = 850.50
+name = "Sam"
+age = 24
+price = 100.50
 available = True
 
-print("Item:", item)
-print("Quantity:", quantity)
+print("Name:", name)
+print("Age:", age)
 print("Price:", price)
 print("Available:", available)
