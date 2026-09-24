@@ -1,9 +1,7 @@
-# 08 - Boolean Logic
-# Evaluates and, or, not expressions.
-
+age = 20
 has_id = True
-has_ticket = False
-is_vip = True
 
-can_enter = (has_id and has_ticket) or is_vip
-print("Can user enter venue?", can_enter)
+print(age >= 18)              # Comparison
+print(age >= 18 and has_id)   # AND
+print(age >= 18 or has_id)    # OR
+print(not has_id)             # NOT
