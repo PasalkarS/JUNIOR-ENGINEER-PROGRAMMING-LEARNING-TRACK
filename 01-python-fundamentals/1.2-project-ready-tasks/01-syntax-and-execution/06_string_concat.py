@@ -1,8 +1,6 @@
-# 06 - String Formatting
+first_name = "Sam"
+last_name = "Pasalkar"
 
-first_name = "Alex"
-last_name = "Smith"
-role = "Software Engineer"
+full_name = first_name + " " + last_name
 
-greeting = f"Employee: {first_name} {last_name} | Role: {role}"
-print(greeting)
+print("Full Name:", full_name)
