@@ -1,11 +1,11 @@
 # 02 - Variables and Data Types
 
-item_name = "Laptop"        # str
-quantity = 3                # int
-price_per_unit = 850.50     # float
-is_in_stock = True          # bool
+item = "Laptop"
+quantity = 3
+price = 850.50
+available = True
 
-print("Item:", item_name)
+print("Item:", item)
 print("Quantity:", quantity)
-print("Unit Price:", price_per_unit)
-print("Available:", is_in_stock)
+print("Price:", price)
+print("Available:", available)
