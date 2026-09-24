@@ -1,10 +1,9 @@
-# 14 - Circle Area and Circumference
 import math
 
-radius = 7.0
-area = math.pi * (radius ** 2)
+radius = float(input("Enter radius: "))
+
+area = math.pi * radius * radius
 circumference = 2 * math.pi * radius
 
-print(f"Radius: {radius}")
-print(f"Area: {area:.2f}")
-print(f"Circumference: {circumference:.2f}")
+print("Area:", area)
+print("Circumference:", circumference)
