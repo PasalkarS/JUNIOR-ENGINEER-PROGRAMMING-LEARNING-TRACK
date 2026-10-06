@@ -1,17 +1,28 @@
-# Application Entry Point
+
 from repository import BookRepository
 from service import LibraryService
 
+
 def main():
-    repo = BookRepository()
-    service = LibraryService(repo)
+    repository = BookRepository()
+    service = LibraryService(repository)
 
-    service.add_new_book("B1", "Clean Code", "Robert C. Martin")
-    service.add_new_book("B2", "The Pragmatic Programmer", "David Thomas")
+    service.add_new_book(
+        "B1", "Clean Code", "Robert C. Martin"
+    )
 
-    print("Current Library Catalog:")
-    for b in service.list_books():
-        print(f" - [{b.book_id}] {b.title} by {b.author}")
+    service.add_new_book(
+        "B2", "The Pragmatic Programmer", "David Thomas"
+    )
+
+    print("Library Catalog:")
+
+    for book in service.list_books():
+        print("Book ID:", book.book_id)
+        print("Title:", book.title)
+        print("Author:", book.author)
+        print("-------------------")
+
 
 if __name__ == "__main__":
     main()
