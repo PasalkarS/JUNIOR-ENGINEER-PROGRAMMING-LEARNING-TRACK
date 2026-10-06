@@ -1,62 +1,51 @@
-# Topic 02: Encapsulation & Invariant Protection
-# Demonstrates protecting object state using properties and validation setters.
 
 class BankAccount:
-    def __init__(self, account_number: str, initial_balance: float = 0.0):
-        if initial_balance < 0:
-            raise ValueError("Initial balance cannot be negative.")
-        self.account_number = account_number
-        self._balance = initial_balance
-        self._is_frozen = False
+    def __init__(self, owner, balance):
+        self.owner = owner
+        self._balance = 0
+        self.balance = balance
 
     @property
-    def balance(self) -> float:
-        """Read-only access to account balance."""
+    def balance(self):
         return self._balance
 
-    @property
-    def is_frozen(self) -> bool:
-        return self._is_frozen
+    @balance.setter
+    def balance(self, amount):
+        if amount < 0:
+            raise ValueError("Balance cannot be negative")
 
-    def freeze(self):
-        self._is_frozen = True
+        self._balance = amount
 
-    def unfreeze(self):
-        self._is_frozen = False
-
-    def deposit(self, amount: float) -> None:
-        if self._is_frozen:
-            raise PermissionError("Account is frozen. Transactions disabled.")
+    def deposit(self, amount):
         if amount <= 0:
-            raise ValueError("Deposit amount must be positive.")
-        self._balance += amount
+            print("Deposit must be greater than zero")
+        else:
+            self._balance += amount
+            print("Deposit successful")
 
-    def withdraw(self, amount: float) -> None:
-        if self._is_frozen:
-            raise PermissionError("Account is frozen. Transactions disabled.")
+    def withdraw(self, amount):
         if amount <= 0:
-            raise ValueError("Withdrawal amount must be positive.")
-        if amount > self._balance:
-            raise ValueError(f"Insufficient funds: Balance is ${self._balance:.2f}, tried to withdraw ${amount:.2f}")
-        self._balance -= amount
+            print("Withdrawal must be greater than zero")
+        elif amount > self._balance:
+            print("Insufficient balance")
+        else:
+            self._balance -= amount
+            print("Withdrawal successful")
 
-if __name__ == "__main__":
-    acc = BankAccount("ACC-9988", 250.0)
-    print(f"Account: {acc.account_number} | Balance: ${acc.balance:.2f}")
+    def show_account(self):
+        print("Owner:", self.owner)
+        print("Balance:", self.balance)
 
-    acc.deposit(100.0)
-    print("Deposited $100 -> New balance:", acc.balance)
 
-    acc.withdraw(50.0)
-    print("Withdrew $50 -> New balance:", acc.balance)
+account1 = BankAccount("Rahul", 5000)
 
-    try:
-        acc.withdraw(500.0)
-    except ValueError as e:
-        print("[CAUGHT]:", e)
+account1.deposit(1000)
+account1.withdraw(2000)
+account1.show_account()
 
-    acc.freeze()
-    try:
-        acc.deposit(10.0)
-    except PermissionError as e:
-        print("[CAUGHT]:", e)
+"""
+Deposit successful
+Withdrawal successful
+Owner: Rahul
+Balance: 4000
+"""
