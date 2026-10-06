@@ -1,38 +1,75 @@
-# Topic 02: Data Cleaning & Normalization Pipeline
 import pandas as pd
-import numpy as np
-import io
 
-MESSY_DATA = """customer_id,name,email,signup_date,active
-C01,  Alice Smith , alice@example.com , 2026-01-15 , TRUE
-C02, Bob Jones,bob@test.com,2026/02/20,false
-C03, Carlos G.,carlos@domain,INVALID_DATE,true
-C01,  Alice Smith , alice@example.com , 2026-01-15 , TRUE
-C04, Diane Vance,diane@corp.org,2026-03-01,
-C05,,missing_name@corp.org,2026-03-05,false
+data = {
+    "Customer_ID": [101, 102, 103, 103, 104, 105],
+    "Name": [" Rahul ", "PRIYA", "amit", "amit", " Sneha ", None],
+    "Email": [
+        "rahul@example.com",
+        "PRIYA@EXAMPLE.COM",
+        "amit@example.com",
+        "amit@example.com",
+        "sneha@example.com",
+        None
+    ],
+    "City": ["Pune", "mumbai", "PUNE", "PUNE", "Delhi", "Mumbai"],
+    "Age": [25, 30, None, None, 28, 17]
+}
+
+df = pd.DataFrame(data)
+
+print("----- ORIGINAL DATA -----")
+print(df)
+
+# Remove duplicate records
+df = df.drop_duplicates()
+
+# Clean names
+df["Name"] = df["Name"].fillna("Unknown")
+df["Name"] = df["Name"].str.strip().str.title()
+
+# Clean email
+df["Email"] = df["Email"].fillna("Not Provided")
+df["Email"] = df["Email"].str.strip().str.lower()
+
+# Clean city
+df["City"] = df["City"].str.strip().str.title()
+
+# Fill missing age
+df["Age"] = df["Age"].fillna(0)
+
+# Convert age to integer
+df["Age"] = df["Age"].astype(int)
+
+# Validate age
+df["Age_Valid"] = (df["Age"] >= 18) & (df["Age"] <= 100)
+
+print("\n----- CLEANED DATA -----")
+print(df)
+
+print("\n----- INVALID AGE RECORDS -----")
+print(df[df["Age_Valid"] == False])
+
+
 """
+----- ORIGINAL DATA -----
+   Customer_ID     Name              Email    City   Age
+0          101   Rahul   rahul@example.com    Pune  25.0
+1          102    PRIYA  PRIYA@EXAMPLE.COM  mumbai  30.0
+2          103     amit   amit@example.com    PUNE   NaN
+3          103     amit   amit@example.com    PUNE   NaN
+4          104   Sneha   sneha@example.com   Delhi  28.0
+5          105      NaN                NaN  Mumbai  17.0
 
-def clean_customers():
-    df = pd.read_csv(io.StringIO(MESSY_DATA.strip()))
-    print("Before Cleaning:")
-    print(df)
+----- CLEANED DATA -----
+   Customer_ID     Name              Email    City  Age  Age_Valid
+0          101    Rahul  rahul@example.com    Pune   25       True
+1          102    Priya  priya@example.com  Mumbai   30       True
+2          103     Amit   amit@example.com    Pune    0      False
+4          104    Sneha  sneha@example.com   Delhi   28       True
+5          105  Unknown       not provided  Mumbai   17      False
 
-    # 1. Deduplicate by customer_id
-    df = df.drop_duplicates(subset=['customer_id'], keep='first')
-
-    # 2. String trimming and case standardization
-    df['name'] = df['name'].fillna('Unknown').astype(str).str.strip().str.title()
-    df['email'] = df['email'].astype(str).str.strip().str.lower()
-
-    # 3. Clean date parsing with coercion
-    df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce', format='mixed')
-
-    # 4. Fill missing active status
-    df['active'] = df['active'].fillna('false').astype(str).str.strip().str.upper() == 'TRUE'
-
-    print("\nAfter Cleaning:")
-    print(df)
-    return df
-
-if __name__ == "__main__":
-    clean_customers()
+----- INVALID AGE RECORDS -----
+   Customer_ID     Name             Email    City  Age  Age_Valid
+2          103     Amit  amit@example.com    Pune    0      False
+5          105  Unknown      not provided  Mumbai   17      False
+"""
