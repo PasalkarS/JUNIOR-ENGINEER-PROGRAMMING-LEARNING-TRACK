@@ -1,58 +1,30 @@
-"""
-Data persistence repositories using Python dictionaries.
-"""
+
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
-from models import Product, Order
 
-class IProductRepository(ABC):
+
+class OrderRepository(ABC):
     @abstractmethod
-    def get_by_sku(self, sku: str) -> Optional[Product]:
+    def save(self, order):
         pass
 
     @abstractmethod
-    def save(self, product: Product) -> None:
+    def find_by_id(self, order_id):
         pass
 
     @abstractmethod
-    def list_all(self) -> List[Product]:
+    def find_all(self):
         pass
 
-class InMemoryProductRepository(IProductRepository):
+
+class InMemoryOrderRepository(OrderRepository):
     def __init__(self):
-        self._products: Dict[str, Product] = {}
+        self.orders = {}
 
-    def get_by_sku(self, sku: str) -> Optional[Product]:
-        return self._products.get(sku)
+    def save(self, order):
+        self.orders[order.order_id] = order
 
-    def save(self, product: Product) -> None:
-        self._products[product.sku] = product
+    def find_by_id(self, order_id):
+        return self.orders.get(order_id)
 
-    def list_all(self) -> List[Product]:
-        return list(self._products.values())
-
-class IOrderRepository(ABC):
-    @abstractmethod
-    def save(self, order: Order) -> None:
-        pass
-
-    @abstractmethod
-    def get_by_id(self, order_id: str) -> Optional[Order]:
-        pass
-
-    @abstractmethod
-    def list_all(self) -> List[Order]:
-        pass
-
-class InMemoryOrderRepository(IOrderRepository):
-    def __init__(self):
-        self._orders: Dict[str, Order] = {}
-
-    def save(self, order: Order) -> None:
-        self._orders[order.order_id] = order
-
-    def get_by_id(self, order_id: str) -> Optional[Order]:
-        return self._orders.get(order_id)
-
-    def list_all(self) -> List[Order]:
-        return list(self._orders.values())
+    def find_all(self):
+        return list(self.orders.values())
