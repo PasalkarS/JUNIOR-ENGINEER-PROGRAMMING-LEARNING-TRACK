@@ -28,3 +28,7 @@ class InMemoryOrderRepository(OrderRepository):
 
     def find_all(self):
         return list(self.orders.values())
+
+
+class MockOrderRepository(InMemoryOrderRepository):
+    pass
