@@ -1,4 +1,4 @@
-# 06 — DataFrames
+# 01 — DataFrames
 
 ## 1. Introduction to Pandas
 
