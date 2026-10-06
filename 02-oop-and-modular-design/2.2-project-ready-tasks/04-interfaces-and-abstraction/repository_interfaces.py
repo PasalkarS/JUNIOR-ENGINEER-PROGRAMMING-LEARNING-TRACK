@@ -1,73 +1,85 @@
-# Topic 04: Interfaces and Abstraction
-# Abstract repository interface with two swappable implementations.
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
-class IUserRepository(ABC):
-    """Contract defining user persistence operations."""
 
+class OrderRepository(ABC):
     @abstractmethod
-    def add(self, user_id: str, user_data: dict) -> None:
+    def save(self, order):
         pass
 
     @abstractmethod
-    def get(self, user_id: str) -> Optional[dict]:
+    def get_all(self):
         pass
 
-    @abstractmethod
-    def list_all(self) -> list[dict]:
-        pass
 
-# Implementation 1: In-Memory (ideal for unit testing)
-class InMemoryUserRepository(IUserRepository):
+class MemoryRepository(OrderRepository):
     def __init__(self):
-        self._db = {}
+        self.orders = []
 
-    def add(self, user_id: str, user_data: dict) -> None:
-        self._db[user_id] = user_data
+    def save(self, order):
+        self.orders.append(order)
 
-    def get(self, user_id: str) -> Optional[dict]:
-        return self._db.get(user_id)
+    def get_all(self):
+        return self.orders
 
-    def list_all(self) -> list[dict]:
-        return list(self._db.values())
 
-# Implementation 2: Dictionary-backed Mock Database with logging
-class AuditedUserRepository(IUserRepository):
+class MockRepository(OrderRepository):
     def __init__(self):
-        self._db = {}
-        self.audit_log = []
+        self.saved_orders = []
 
-    def add(self, user_id: str, user_data: dict) -> None:
-        self._db[user_id] = user_data
-        self.audit_log.append(f"INSERT: user {user_id}")
+    def save(self, order):
+        print("Mock save:", order)
+        self.saved_orders.append(order)
 
-    def get(self, user_id: str) -> Optional[dict]:
-        self.audit_log.append(f"READ: user {user_id}")
-        return self._db.get(user_id)
+    def get_all(self):
+        return self.saved_orders
 
-    def list_all(self) -> list[dict]:
-        self.audit_log.append("LIST: all users")
-        return list(self._db.values())
 
-# Client Service depending strictly on the abstract interface
-class UserService:
-    def __init__(self, repo: IUserRepository):
-        self.repo = repo
+class OrderService:
+    def __init__(self, repository):
+        self.repository = repository
 
-    def register_user(self, user_id: str, name: str, email: str):
-        self.repo.add(user_id, {"id": user_id, "name": name, "email": email})
+    def create_order(self, product, amount):
+        if not product:
+            raise ValueError("Product is required")
 
-    def find_user(self, user_id: str):
-        return self.repo.get(user_id)
+        if amount <= 0:
+            raise ValueError("Amount must be greater than zero")
 
-if __name__ == "__main__":
-    # Test with Audited repo
-    repo = AuditedUserRepository()
-    service = UserService(repo)
+        order = {
+            "product": product,
+            "amount": amount
+        }
 
-    service.register_user("U101", "Alice", "alice@test.com")
-    user = service.find_user("U101")
-    print("Found User:", user)
-    print("Audit Log:", repo.audit_log)
+        self.repository.save(order)
+        print("Order created")
+
+
+memory_repository = MemoryRepository()
+service = OrderService(memory_repository)
+
+service.create_order("Laptop", 50000)
+service.create_order("Mouse", 1000)
+
+print("Saved orders:", memory_repository.get_all())
+
+print("\nTesting with mock repository:")
+
+mock_repository = MockRepository()
+test_service = OrderService(mock_repository)
+
+test_service.create_order("Keyboard", 1500)
+
+"""
+Order created
+Order created
+Saved orders: [{'product': 'Laptop', 'amount': 50000}, {'product': 'Mouse', 'amount': 1000}]
+
+Testing with mock repository:
+Mock save: {'product': 'Keyboard', 'amount': 1500}
+Order created
+Mock orders: [{'product': 'Keyboard', 'amount': 1500}]
+
+"""
+
+print("Mock orders:", mock_repository.get_all())
