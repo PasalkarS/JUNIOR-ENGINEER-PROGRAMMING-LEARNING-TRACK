@@ -1,74 +1,77 @@
-"""
-Automated unit tests for Order Management Service.
-"""
-import pytest
-from pathlib import Path
-import sys
 
-src_path = str(Path(__file__).resolve().parent.parent / "src")
-if src_path in sys.path:
-    sys.path.remove(src_path)
-sys.path.insert(0, src_path)
+import unittest
 
-for mod in ["models", "repositories", "services"]:
-    sys.modules.pop(mod, None)
+from models import Order
+from repositories import InMemoryOrderRepository
+from services import OrderService
 
-from models import Customer, Product, OrderStatus
-from repositories import InMemoryProductRepository, InMemoryOrderRepository
-from services import NotificationService, OrderService
 
-@pytest.fixture
-def test_setup():
-    prod_repo = InMemoryProductRepository()
-    prod_repo.save(Product("SKU-1", "Test Product 1", 50.0, 10))
-    prod_repo.save(Product("SKU-2", "Test Product 2", 100.0, 2))
+class TestOrderService(unittest.TestCase):
+    def setUp(self):
+        self.repository = InMemoryOrderRepository()
+        self.service = OrderService(self.repository)
 
-    order_repo = InMemoryOrderRepository()
-    notifier = NotificationService()
-    service = OrderService(prod_repo, order_repo, notifier)
-    customer = Customer("C1", "John Tester", "tester@example.com")
-    return service, prod_repo, order_repo, customer
+    def test_create_order(self):
+        order = self.service.create_order(
+            "O1", "Rahul", "Laptop", 1, 50000
+        )
 
-def test_create_order_success(test_setup):
-    service, prod_repo, order_repo, customer = test_setup
-    order = service.create_order(customer, [("SKU-1", 2), ("SKU-2", 1)])
+        self.assertEqual(order.order_id, "O1")
+        self.assertEqual(order.customer, "Rahul")
 
-    assert order.total_amount == 200.0
-    assert order.status == OrderStatus.PENDING
-    assert prod_repo.get_by_sku("SKU-1").stock == 8
-    assert prod_repo.get_by_sku("SKU-2").stock == 1
-    assert len(order_repo.list_all()) == 1
+    def test_calculate_total(self):
+        order = Order("O1", "Rahul", "Mouse", 2, 500)
 
-def test_create_order_insufficient_stock(test_setup):
-    service, prod_repo, order_repo, customer = test_setup
-    with pytest.raises(ValueError, match="Insufficient stock"):
-        service.create_order(customer, [("SKU-2", 5)])
+        self.assertEqual(order.calculate_total(), 1000)
 
-def test_order_lifecycle_transitions(test_setup):
-    service, prod_repo, order_repo, customer = test_setup
-    order = service.create_order(customer, [("SKU-1", 1)])
+    def test_invalid_quantity(self):
+        with self.assertRaises(ValueError):
+            self.service.create_order(
+                "O1", "Rahul", "Mouse", 0, 500
+            )
 
-    # Cannot ship before pay
-    with pytest.raises(ValueError):
-        service.ship_order(order.order_id)
+    def test_invalid_price(self):
+        with self.assertRaises(ValueError):
+            self.service.create_order(
+                "O1", "Rahul", "Mouse", 1, -500
+            )
 
-    # Pay
-    service.pay_order(order.order_id)
-    assert order.status == OrderStatus.PAID
+    def test_duplicate_order_id(self):
+        self.service.create_order(
+            "O1", "Rahul", "Mouse", 1, 500
+        )
 
-    # Ship
-    service.ship_order(order.order_id)
-    assert order.status == OrderStatus.SHIPPED
+        with self.assertRaises(ValueError):
+            self.service.create_order(
+                "O1", "Amit", "Keyboard", 1, 1000
+            )
 
-    # Cannot cancel shipped order
-    with pytest.raises(ValueError):
-        service.cancel_order(order.order_id)
+    def test_order_not_found(self):
+        with self.assertRaises(ValueError):
+            self.service.get_order("O99")
 
-def test_cancel_order_restores_stock(test_setup):
-    service, prod_repo, order_repo, customer = test_setup
-    order = service.create_order(customer, [("SKU-1", 3)])
-    assert prod_repo.get_by_sku("SKU-1").stock == 7
+    def test_get_all_orders(self):
+        self.service.create_order(
+            "O1", "Rahul", "Mouse", 1, 500
+        )
+        self.service.create_order(
+            "O2", "Amit", "Keyboard", 1, 1000
+        )
 
-    service.cancel_order(order.order_id)
-    assert order.status == OrderStatus.CANCELLED
-    assert prod_repo.get_by_sku("SKU-1").stock == 10
+        orders = self.service.get_all_orders()
+
+        self.assertEqual(len(orders), 2)
+
+    def test_repository_saves_order(self):
+        self.service.create_order(
+            "O1", "Rahul", "Mouse", 1, 500
+        )
+
+        saved_order = self.repository.find_by_id("O1")
+
+        self.assertIsNotNone(saved_order)
+        self.assertEqual(saved_order.product, "Mouse")
+
+
+if __name__ == "__main__":
+    unittest.main()
