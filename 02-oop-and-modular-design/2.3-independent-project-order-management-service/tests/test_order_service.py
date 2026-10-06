@@ -2,13 +2,13 @@
 import unittest
 
 from models import Order
-from repositories import InMemoryOrderRepository
+from repositories import MockOrderRepository
 from services import OrderService
 
 
 class TestOrderService(unittest.TestCase):
     def setUp(self):
-        self.repository = InMemoryOrderRepository()
+        self.repository = MockOrderRepository()
         self.service = OrderService(self.repository)
 
     def test_create_order(self):
