@@ -1,37 +1,69 @@
-"""
-CLI Demonstration for Order Management Service.
-"""
-from models import Customer, Product
-from repositories import InMemoryProductRepository, InMemoryOrderRepository
-from services import NotificationService, OrderService
 
-def bootstrap():
-    prod_repo = InMemoryProductRepository()
-    prod_repo.save(Product("LAP-01", "MacBook Pro M3", 1999.00, 5))
-    prod_repo.save(Product("MOU-01", "Logitech MX Master", 99.00, 20))
-    prod_repo.save(Product("KEY-01", "Keychron K2", 89.00, 15))
+from repositories import InMemoryOrderRepository
+from services import OrderService
 
-    order_repo = InMemoryOrderRepository()
-    notifier = NotificationService()
-    service = OrderService(prod_repo, order_repo, notifier)
 
-    print("=== Order Management Service Initialized ===")
-    print("Available Catalog:")
-    for p in prod_repo.list_all():
-        print(f" - [{p.sku}] {p.name}: ${p.price:.2f} (Stock: {p.stock})")
+def main():
+    repository = InMemoryOrderRepository()
+    service = OrderService(repository)
 
-    cust = Customer("C-101", "Sarah Connor", "sarah@resistance.org")
-    print(f"\nCreating order for {cust.name}...")
-    order = service.create_order(cust, [("LAP-01", 1), ("MOU-01", 2)])
-    print(f"Order Created: #{order.order_id} | Total: ${order.total_amount:.2f} | Status: {order.status}")
+    while True:
+        print("\n===== ORDER MANAGEMENT =====")
+        print("1. Create Order")
+        print("2. View Order")
+        print("3. View All Orders")
+        print("4. Exit")
 
-    print("\nProcessing Payment...")
-    service.pay_order(order.order_id)
-    print(f"Order Status after payment: {order.status}")
+        choice = input("Enter your choice: ")
 
-    print("\nShipping Order...")
-    service.ship_order(order.order_id)
-    print(f"Order Status after shipping: {order.status}")
+        if choice == "1":
+            try:
+                order_id = input("Enter order ID: ")
+                customer = input("Enter customer name: ")
+                product = input("Enter product name: ")
+                quantity = int(input("Enter quantity: "))
+                price = float(input("Enter price: "))
+
+                order = service.create_order(
+                    order_id,
+                    customer,
+                    product,
+                    quantity,
+                    price
+                )
+
+                print("\nOrder created successfully!")
+                order.show_order()
+
+            except ValueError as error:
+                print("Error:", error)
+
+        elif choice == "2":
+            order_id = input("Enter order ID: ")
+
+            try:
+                order = service.get_order(order_id)
+                order.show_order()
+            except ValueError as error:
+                print("Error:", error)
+
+        elif choice == "3":
+            orders = service.get_all_orders()
+
+            if not orders:
+                print("No orders found")
+            else:
+                for order in orders:
+                    print("-------------------")
+                    order.show_order()
+
+        elif choice == "4":
+            print("Exiting Order Management System")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
 
 if __name__ == "__main__":
-    bootstrap()
+    main()
