@@ -1,50 +1,58 @@
-# Topic 06: SOLID Design Principles Refactoring
-# Demonstrates refactoring code that violates Single Responsibility & Dependency Inversion.
+# Bad design: one class does everything
 
-# --- BAD DESIGN (Violates SRP & DIP) ---
-# A single class handles calculation, persistence, and output formatting.
 class BadOrderManager:
-    def process_order(self, customer: str, amount: float):
-        total = amount * 1.08  # calculation
-        with open("orders_log.txt", "a") as f:  # hardcoded I/O
-            f.write(f"{customer},{total}\n")
-        print(f"Sent email receipt to {customer} for ${total:.2f}")  # output
+    def place_order(self, product, price):
+        print("Saving order:", product)
+        print("Price:", price)
+        print("Sending email to customer")
+        print("Creating report")
 
-# --- IMPROVED CLEAN DESIGN (Honors SOLID) ---
-class OrderCalculator:
-    """SRP: Only calculates pricing and tax."""
-    @staticmethod
-    def calculate_total(amount: float, tax_rate: float = 0.08) -> float:
-        return round(amount * (1 + tax_rate), 2)
 
-class OrderLogger:
-    """SRP: Only handles persistence logging."""
-    def __init__(self):
-        self.logs = []
+# Improved design
 
-    def log_order(self, customer: str, total: float):
-        self.logs.append(f"{customer}: ${total:.2f}")
+class Order:
+    def __init__(self, product, price):
+        self.product = product
+        self.price = price
 
-class OrderNotification:
-    """SRP: Only handles notifications."""
-    @staticmethod
-    def send_confirmation(customer: str, total: float):
-        print(f"[CONFIRMATION] Customer '{customer}' charged ${total:.2f}")
 
-class OrderProcessor:
-    """DIP: Glues together injected dependencies."""
-    def __init__(self, calculator: OrderCalculator, logger: OrderLogger, notifier: OrderNotification):
-        self.calc = calculator
-        self.logger = logger
-        self.notifier = notifier
+class OrderRepository:
+    def save(self, order):
+        print("Saving order:", order.product)
 
-    def process(self, customer: str, amount: float) -> float:
-        total = self.calc.calculate_total(amount)
-        self.logger.log_order(customer, total)
-        self.notifier.send_confirmation(customer, total)
-        return total
 
-if __name__ == "__main__":
-    processor = OrderProcessor(OrderCalculator(), OrderLogger(), OrderNotification())
-    processor.process("Bob", 150.0)
-    print("Recorded logs:", processor.logger.logs)
+class EmailNotification:
+    def send(self, message):
+        print("Email sent:", message)
+
+
+class OrderService:
+    def __init__(self, repository, notification):
+        self.repository = repository
+        self.notification = notification
+
+    def place_order(self, order):
+        if not order.product:
+            raise ValueError("Product is required")
+
+        if order.price <= 0:
+            raise ValueError("Price must be positive")
+
+        self.repository.save(order)
+        self.notification.send("Order confirmed")
+
+
+# Create objects
+
+order1 = Order("Laptop", 50000)
+
+repository = OrderRepository()
+notification = EmailNotification()
+
+service = OrderService(repository, notification)
+service.place_order(order1)
+
+"""
+Saving order: Laptop
+Email sent: Order confirmed
+"""
