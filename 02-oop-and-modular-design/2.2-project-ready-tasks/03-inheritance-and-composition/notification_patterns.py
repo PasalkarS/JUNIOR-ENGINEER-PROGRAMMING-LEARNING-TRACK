@@ -1,37 +1,75 @@
-# Topic 03: Inheritance vs Composition
-# Demonstrates both inheritance and composition in notification systems.
 
-# --- APPROACH A: Polymorphic Inheritance ---
-class BaseNotifier:
-    def __init__(self, sender_name: str):
-        self.sender_name = sender_name
+# Inheritance
 
-    def send(self, recipient: str, message: str) -> None:
-        raise NotImplementedError("Subclasses must implement send().")
+class Notification:
+    def send(self, message):
+        print("Sending notification:", message)
 
-class EmailNotifier(BaseNotifier):
-    def send(self, recipient: str, message: str) -> None:
-        print(f"[EMAIL] From: {self.sender_name} To: <{recipient}> | {message}")
 
-class SMSNotifier(BaseNotifier):
-    def send(self, recipient: str, message: str) -> None:
-        print(f"[SMS] From: {self.sender_name} To: [{recipient}] | {message}")
+class EmailNotification(Notification):
+    def send(self, message):
+        print("Email:", message)
 
-# --- APPROACH B: Composition (Preferred) ---
-# AlertManager HAS-A list of notification channels (loose coupling!)
-class AlertManager:
-    def __init__(self, channels: list[BaseNotifier]):
-        self.channels = channels
 
-    def broadcast_alert(self, recipient: str, message: str):
-        print(f"\n--- Broadcasting Alert to {recipient} ---")
-        for channel in self.channels:
-            channel.send(recipient, message)
+class SMSNotification(Notification):
+    def send(self, message):
+        print("SMS:", message)
 
-if __name__ == "__main__":
-    email_channel = EmailNotifier("Company Alerts")
-    sms_channel = SMSNotifier("9900")
 
-    # Composite manager assembled with interchangeable channels
-    alert_mgr = AlertManager([email_channel, sms_channel])
-    alert_mgr.broadcast_alert("admin@company.com", "Database failover initiated.")
+# Composition
+
+class Payment:
+    def pay(self, amount):
+        print("Payment successful:", amount)
+
+
+class Order:
+    def __init__(self, product, amount):
+        self.product = product
+        self.amount = amount
+
+
+class OrderService:
+    def __init__(self, payment, notification):
+        self.payment = payment
+        self.notification = notification
+
+    def place_order(self, order):
+        print("Order placed:", order.product)
+        self.payment.pay(order.amount)
+        self.notification.send("Your order is confirmed")
+
+
+class Report:
+    def create_report(self, order):
+        print("\n----- REPORT -----")
+        print("Product:", order.product)
+        print("Amount:", order.amount)
+
+
+email = EmailNotification()
+sms = SMSNotification()
+
+email.send("Welcome to our store")
+sms.send("Your order is ready")
+
+payment = Payment()
+order = Order("Laptop", 50000)
+
+service = OrderService(payment, email)
+service.place_order(order)
+
+report = Report()
+report.create_report(order)
+
+"""
+Email: Welcome to our store
+SMS: Your order is ready
+Order placed: Laptop
+Payment successful: 50000
+Email: Your order is confirmed
+
+----- REPORT -----
+Product: Laptop
+Amount: 50000
+"""
