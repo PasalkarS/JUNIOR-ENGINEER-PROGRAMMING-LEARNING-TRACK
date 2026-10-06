@@ -1,4 +1,4 @@
-# 06.2 — Cleaning
+# 02 — Cleaning
 
 ## 1. What Data Cleaning Means
 
