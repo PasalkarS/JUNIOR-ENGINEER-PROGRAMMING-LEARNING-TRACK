@@ -1,17 +1,32 @@
-# Business Workflow Layer
+
 from models import Book
-from repository import BookRepository
+
 
 class LibraryService:
-    def __init__(self, repo: BookRepository):
-        self.repo = repo
+    def __init__(self, repository):
+        self.repository = repository
 
-    def add_new_book(self, book_id: str, title: str, author: str) -> Book:
+    def add_new_book(self, book_id, title, author):
+        if not book_id.strip():
+            raise ValueError("Book ID is required")
+
         if not title.strip():
-            raise ValueError("Book title cannot be blank.")
-        book = Book(book_id, title.strip(), author.strip())
-        self.repo.save(book)
+            raise ValueError("Book title is required")
+
+        if not author.strip():
+            raise ValueError("Author name is required")
+
+        book = Book(
+            book_id.strip(),
+            title.strip(),
+            author.strip()
+        )
+
+        self.repository.save(book)
         return book
 
-    def list_books(self) -> list[Book]:
-        return self.repo.find_all()
+    def list_books(self):
+        return self.repository.find_all()
+
+    def find_book(self, book_id):
+        return self.repository.find_by_id(book_id)
