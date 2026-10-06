@@ -69,6 +69,8 @@ mock_repository = MockRepository()
 test_service = OrderService(mock_repository)
 
 test_service.create_order("Keyboard", 1500)
+print("Mock orders:", mock_repository.get_all())
+
 
 """
 Order created
@@ -81,5 +83,3 @@ Order created
 Mock orders: [{'product': 'Keyboard', 'amount': 1500}]
 
 """
-
-print("Mock orders:", mock_repository.get_all())
