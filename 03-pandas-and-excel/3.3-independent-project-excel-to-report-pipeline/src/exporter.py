@@ -1,43 +1,84 @@
-"""
-OpenPyXL-powered multi-worksheet professional Excel generator.
-"""
-from pathlib import Path
 import pandas as pd
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
-def export_executive_report(
-    enriched_df: pd.DataFrame,
-    category_summary: pd.DataFrame,
-    regional_summary: pd.DataFrame,
-    audit_errors: pd.DataFrame,
-    output_path: str | Path
-) -> Path:
-    out = Path(output_path)
-    out.parent.mkdir(parents=True, exist_ok=True)
 
-    with pd.ExcelWriter(out, engine="openpyxl") as writer:
-        category_summary.to_excel(writer, sheet_name="Category Summary", index=False)
-        regional_summary.to_excel(writer, sheet_name="Regional Summary", index=False)
-        enriched_df.to_excel(writer, sheet_name="Clean Sales Data", index=False)
-        if not audit_errors.empty:
-            audit_errors.to_excel(writer, sheet_name="Audit Rejections", index=False)
+def export_report(
+    output_file,
+    sales_data,
+    monthly_summary,
+    category_summary,
+    product_summary,
+    errors
+):
 
-        wb = writer.book
+    error_data = pd.DataFrame({
+        "Error": errors
+    })
 
-        header_fill = PatternFill(start_color="1F4E79", end_color="1F4E79", fill_type="solid")
-        header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+    with pd.ExcelWriter(
+        output_file,
+        engine="openpyxl"
+    ) as writer:
 
-        for ws in wb.worksheets:
-            ws.freeze_panes = "A2"
-            for cell in ws[1]:
-                cell.fill = header_fill
-                cell.font = header_font
-                cell.alignment = Alignment(horizontal="center")
+        sales_data.to_excel(
+            writer,
+            sheet_name="Sales Data",
+            index=False
+        )
 
-            for col in ws.columns:
-                max_len = max(len(str(c.value or "")) for c in col)
-                col_letter = get_column_letter(col[0].column)
-                ws.column_dimensions[col_letter].width = max(max_len + 4, 12)
+        monthly_summary.to_excel(
+            writer,
+            sheet_name="Monthly Summary",
+            index=False
+        )
 
-    return out
+        category_summary.to_excel(
+            writer,
+            sheet_name="Category Summary",
+            index=False
+        )
+
+        product_summary.to_excel(
+            writer,
+            sheet_name="Product Summary",
+            index=False
+        )
+
+        error_data.to_excel(
+            writer,
+            sheet_name="Error Summary",
+            index=False
+        )
+
+        workbook = writer.book
+
+        for sheet in workbook.worksheets:
+
+            # Bold headers
+            for cell in sheet[1]:
+                cell.font = Font(bold=True)
+                cell.alignment = Alignment(
+                    horizontal="center"
+                )
+
+            # Adjust column widths
+            for column in sheet.columns:
+
+                column_letter = get_column_letter(
+                    column[0].column
+                )
+
+                max_length = 0
+
+                for cell in column:
+                    if cell.value is not None:
+                        max_length = max(
+                            max_length,
+                            len(str(cell.value))
+                        )
+
+                sheet.column_dimensions[
+                    column_letter
+                ].width = max_length + 2
+                
