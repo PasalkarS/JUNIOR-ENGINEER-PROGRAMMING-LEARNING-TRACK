@@ -1,37 +1,69 @@
-"""
-Relational enrichment and multi-metric aggregation module.
-"""
-import pandas as pd
+def transform_sales_data(sales, products):
+    sales = sales.copy()
+    products = products.copy()
 
-def enrich_sales(df_sales: pd.DataFrame, df_products: pd.DataFrame) -> pd.DataFrame:
-    merged = pd.merge(df_sales, df_products, on="product_id", how="left")
-    merged["unit_price"] = merged["unit_price"].fillna(0.0)
-    merged["cost_price"] = merged["cost_price"].fillna(0.0)
-    merged["category"] = merged["category"].fillna("Unassigned")
+    # Calculate total sale
+    sales["Total"] = (
+        sales["Quantity"] * sales["Price"]
+    )
 
-    # Vectorized financial calculations
-    merged["revenue"] = round(merged["quantity"] * merged["unit_price"], 2)
-    merged["total_cost"] = round(merged["quantity"] * merged["cost_price"], 2)
-    merged["profit"] = round(merged["revenue"] - merged["total_cost"], 2)
+    # Create month column
+    sales["Month"] = (
+        sales["Sale_Date"]
+        .dt.to_period("M")
+        .astype(str)
+    )
+
+    # Join sales with products
+    merged = sales.merge(
+        products,
+        on="Product_ID",
+        how="left"
+    )
 
     return merged
 
-def generate_category_summary(df_enriched: pd.DataFrame) -> pd.DataFrame:
-    summary = df_enriched.groupby("category").agg(
-        total_units_sold=("quantity", "sum"),
-        total_revenue=("revenue", "sum"),
-        total_profit=("profit", "sum")
-    ).reset_index()
 
-    summary["profit_margin_%"] = round(
-        (summary["total_profit"] / summary["total_revenue"].replace(0, 1)) * 100, 1
+def create_monthly_summary(df):
+    summary = (
+        df.groupby("Month")
+        .agg(
+            Total_Sales=("Total", "sum"),
+            Total_Quantity=("Quantity", "sum"),
+            Number_of_Sales=("Sale_ID", "count")
+        )
+        .reset_index()
     )
+
     return summary
 
-def generate_regional_summary(df_enriched: pd.DataFrame) -> pd.DataFrame:
-    summary = df_enriched.groupby("region").agg(
-        total_orders=("order_id", "count"),
-        total_revenue=("revenue", "sum"),
-        total_profit=("profit", "sum")
-    ).reset_index()
+
+def create_category_summary(df):
+    summary = (
+        df.groupby("Category")
+        .agg(
+            Total_Sales=("Total", "sum"),
+            Total_Quantity=("Quantity", "sum")
+        )
+        .reset_index()
+    )
+
     return summary
+
+
+def create_product_summary(df):
+    summary = (
+        df.groupby("Product_Name")
+        .agg(
+            Total_Sales=("Total", "sum"),
+            Total_Quantity=("Quantity", "sum")
+        )
+        .reset_index()
+        .sort_values(
+            "Total_Sales",
+            ascending=False
+        )
+    )
+
+    return summary
+    
