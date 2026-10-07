@@ -1,42 +1,66 @@
-"""
-Data quality audit and quarantine engine.
-"""
-import pandas as pd
-
-REQUIRED_COLUMNS = {"order_id", "date", "customer", "product_id", "quantity", "region"}
-
-def validate_sales_data(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """
-    Audits incoming dataframe.
-    Returns (valid_df, errors_df).
-    """
-    missing_cols = REQUIRED_COLUMNS - set(df.columns)
-    if missing_cols:
-        raise ValueError(f"Schema violation: missing required columns {missing_cols}")
-
+def validate_sales_data(df):
     errors = []
 
-    # 1. Invalid or Missing Order IDs
-    for idx, row in df[df["order_id"].isna()].iterrows():
-        errors.append({"row_index": idx, "field": "order_id", "reason": "Missing order ID"})
+    required_columns = [
+        "Sale_ID",
+        "Customer",
+        "Product_ID",
+        "Quantity",
+        "Price",
+        "Sale_Date"
+    ]
 
-    # 2. Non-positive Quantity
-    for idx, row in df[df["quantity"] <= 0].iterrows():
-        errors.append({"row_index": idx, "field": "quantity", "reason": f"Quantity must be > 0 (got {row['quantity']})"})
+    for column in required_columns:
+        if column not in df.columns:
+            errors.append(
+                "Missing required column: " + column
+            )
 
-    # 3. Duplicate Order IDs
-    dupes = df[df.duplicated(subset=["order_id"], keep="first")]
-    for idx, row in dupes.iterrows():
-        errors.append({"row_index": idx, "field": "order_id", "reason": f"Duplicate order ID '{row['order_id']}'"})
+    if "Sale_ID" in df.columns:
+        duplicate_count = df["Sale_ID"].duplicated().sum()
 
-    error_df = pd.DataFrame(errors)
+        if duplicate_count > 0:
+            errors.append(
+                str(duplicate_count)
+                + " duplicate Sale_ID values found"
+            )
 
-    # Mask for clean valid records
-    valid_mask = (
-        df["order_id"].notna() &
-        (df["quantity"] > 0) &
-        (~df.duplicated(subset=["order_id"], keep="first"))
-    )
-    valid_df = df[valid_mask].copy()
+    if "Quantity" in df.columns:
+        invalid_quantity = (df["Quantity"] <= 0).sum()
 
-    return valid_df, error_df
+        if invalid_quantity > 0:
+            errors.append(
+                str(invalid_quantity)
+                + " invalid quantity values found"
+            )
+
+    if "Price" in df.columns:
+        invalid_price = (df["Price"] <= 0).sum()
+
+        if invalid_price > 0:
+            errors.append(
+                str(invalid_price)
+                + " invalid price values found"
+            )
+
+    return errors
+
+
+def validate_product_data(df):
+    errors = []
+
+    required_columns = [
+        "Product_ID",
+        "Product_Name",
+        "Category"
+    ]
+
+    for column in required_columns:
+        if column not in df.columns:
+            errors.append(
+                "Missing required product column: "
+                + column
+            )
+
+    return errors
+    
