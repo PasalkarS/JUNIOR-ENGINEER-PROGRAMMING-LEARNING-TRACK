@@ -1,356 +1,554 @@
-1 SQL Basics
-1. Introduction to SQL
+# 1 — SQL Basics
 
-What it is
+## 1. Introduction to SQL
 
-SQL (Structured Query Language) is used to create, manage, and retrieve data from relational databases.
+### What it is
 
-Important Points
+SQL (Structured Query Language) is used to create, read, update, and delete data in relational databases.
 
-SQL works with data stored in tables.
-It supports creating, reading, updating, and deleting records.
-SQLite uses SQL to manage local databases.
-SQL commands can be executed manually or through Python.
-2. Introduction to Relational Databases
+### Important Points
 
-What it is
+* SQL is used to communicate with databases.
+* It helps manage data stored in tables.
+* SQL commands can retrieve or modify records.
+* SQLite uses SQL to manage database information.
 
-A relational database stores related information in tables that can be connected using keys.
+## 2. Introduction to Relational Databases
 
-Important Points
+### What it is
 
-A database can contain multiple tables.
-Tables store different types of information.
-Relationships connect records across tables.
-SQLite stores its database in a local file.
-3. Tables, Rows, and Columns
+A relational database stores data in tables that can be connected through relationships.
 
-What it is
+### Important Points
 
-A table organizes information into rows and columns.
+* A database can contain multiple tables.
+* Each table stores a particular type of information.
+* Tables contain rows and columns.
+* Relationships connect related records across tables.
+* SQLite stores database information in a local file.
 
-Important Points
+## 3. Tables, Rows, and Columns
 
-A row represents one record.
-A column represents one attribute.
-Each column has a name and data type.
-A database can contain multiple related tables.
+### What it is
 
-Example
+A table organizes data into rows and columns.
 
-id	name	price
-1	Laptop	50000
-2	Mouse	500
-4. Data Types in SQLite
+### Important Points
 
-What it is
+* A **table** stores related information.
+* A **row** represents one record.
+* A **column** represents one attribute.
+* Each column has a name and a declared data type.
+* Each record can be identified using a unique ID.
 
-Data types describe the kind of values stored in a column.
+### Example
 
-Important Points
+```text
+products
+-------------------------
+id    name       price
+1     Laptop     50000
+2     Mouse      500
+3     Keyboard   1200
+```
 
-NULL represents a missing or unknown value.
-INTEGER stores whole numbers.
-REAL stores floating-point numbers.
-TEXT stores text.
-BLOB stores binary data.
-SQLite also uses type affinity, so column declarations do not always strictly restrict stored values.
+## 4. Data Types in SQLite
 
-Basic Syntax
+### What it is
 
+Data types describe the kind of values a column is intended to store.
+
+### Important Points
+
+* `INTEGER` — whole numbers.
+* `REAL` — floating-point numbers.
+* `TEXT` — text values.
+* `BLOB` — binary data.
+* `NULL` — a missing or unknown value.
+* SQLite uses type affinity, so declared types do not always strictly restrict the values stored.
+
+### Basic Syntax
+
+```sql
 CREATE TABLE products (
     id INTEGER,
     name TEXT,
     price REAL,
     stock INTEGER
 );
-5. Creating Tables
+```
 
-What it is
+## 5. Creating Tables
 
-The CREATE TABLE statement creates a new table in a database.
+### What it is
 
-Important Points
+The `CREATE TABLE` statement creates a new table in a database.
 
-Every table needs a name.
-Columns are defined inside parentheses.
-Each column has a name and declared type.
-Constraints can be added to protect data quality.
-Use IF NOT EXISTS to avoid an error if the table already exists.
+### Important Points
 
-Basic Syntax
+* Every table needs a name.
+* Columns are defined inside parentheses.
+* Each column has a name and declared type.
+* Constraints can be used to protect data quality.
+* `IF NOT EXISTS` prevents an error if the table already exists.
 
+### Basic Syntax
+
+```sql
 CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     price REAL
 );
-6. Primary Keys
+```
 
-What it is
+## 6. Primary Keys
+
+### What it is
 
 A primary key uniquely identifies each record in a table.
 
-Important Points
+### Important Points
 
-Primary key values must be unique.
-A primary key cannot be NULL.
-A table has one primary key, which can contain one or multiple columns.
-IDs are commonly used as primary keys.
-In SQLite, INTEGER PRIMARY KEY normally aliases the rowid.
+* Primary key values must be unique.
+* A primary key cannot contain `NULL`.
+* A table has one primary key, which can consist of one or multiple columns.
+* IDs are commonly used as primary keys.
+* `INTEGER PRIMARY KEY` normally acts as the row ID in SQLite.
 
-Basic Syntax
+### Basic Syntax
 
+```sql
 CREATE TABLE customers (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
 );
-7. Inserting Records — INSERT
+```
 
-What it is
+## 7. Inserting Records — INSERT
 
-INSERT adds new records to a table.
+### What it is
 
-Important Points
+The `INSERT` statement adds new records to a table.
 
-Specify the table name.
-Specify the columns receiving values.
-Values must match the intended columns.
-Text values are written inside quotes.
-Omitting an automatically generated ID allows SQLite to assign one.
+### Important Points
 
-Basic Syntax
+* Specify the table name.
+* Specify the columns that will receive values.
+* Values should match the intended columns.
+* Text values are enclosed in single quotes.
+* SQLite can automatically assign an ID when an appropriate integer primary key is omitted.
 
+### Basic Syntax
+
+```sql
 INSERT INTO products (name, price)
 VALUES ('Laptop', 50000);
-8. Retrieving Records — SELECT
+```
 
-What it is
+### Inserting Multiple Records
 
-SELECT retrieves data from a table.
+```sql
+INSERT INTO products (name, price)
+VALUES
+    ('Mouse', 500),
+    ('Keyboard', 1200);
+```
 
-Important Points
+## 8. Retrieving Records — SELECT
 
-SELECT * retrieves all columns.
-Specify column names to retrieve only selected data.
-FROM identifies the table.
-Queries do not change the stored records.
+### What it is
 
-Basic Syntax
+The `SELECT` statement retrieves data from a table.
 
+### Important Points
+
+* `SELECT *` retrieves all columns.
+* Specify column names to retrieve only selected columns.
+* `FROM` identifies the table.
+* `SELECT` does not modify stored records.
+
+### Basic Syntax
+
+```sql
 SELECT * FROM products;
+```
 
+### Selecting Specific Columns
+
+```sql
 SELECT name, price
 FROM products;
-9. Filtering Records — WHERE
+```
 
-What it is
+## 9. Filtering Records — WHERE
 
-WHERE selects records that match a condition.
+### What it is
 
-Important Points
+The `WHERE` clause selects records that match a specified condition.
 
-Use comparison operators such as =, !=, >, <, >=, and <=.
-Multiple conditions can be combined.
-Text comparisons usually require quotes.
-Use IS NULL to find missing values.
+### Important Points
 
-Basic Syntax
+* `=` checks equality.
+* `!=` and `<>` check inequality.
+* `>` and `<` compare values.
+* `>=` and `<=` check greater-than-or-equal and less-than-or-equal conditions.
+* `IS NULL` checks for missing values.
+* `WHERE` can be used with `SELECT`, `UPDATE`, and `DELETE`.
 
+### Basic Syntax
+
+```sql
 SELECT *
 FROM products
 WHERE price > 1000;
-10. Sorting Records — ORDER BY
+```
 
-What it is
+### Filtering Text Values
 
-ORDER BY sorts query results by one or more columns.
+```sql
+SELECT *
+FROM products
+WHERE name = 'Laptop';
+```
 
-Important Points
+## 10. Sorting Records — ORDER BY
 
-ASC sorts in ascending order.
-DESC sorts in descending order.
-Ascending order is the default.
-Multiple columns can be used for sorting.
+### What it is
 
-Basic Syntax
+The `ORDER BY` clause sorts query results using one or more columns.
 
+### Important Points
+
+* `ASC` sorts in ascending order.
+* `DESC` sorts in descending order.
+* Ascending order is the default.
+* Multiple columns can be used for sorting.
+
+### Basic Syntax
+
+```sql
+SELECT *
+FROM products
+ORDER BY price ASC;
+```
+
+### Sorting in Descending Order
+
+```sql
 SELECT *
 FROM products
 ORDER BY price DESC;
-11. Updating Records — UPDATE
+```
 
-What it is
+## 11. Updating Records — UPDATE
 
-UPDATE changes existing records in a table.
+### What it is
 
-Important Points
+The `UPDATE` statement modifies existing records in a table.
 
-SET specifies the new values.
-WHERE identifies the records to change.
-Without WHERE, all records may be updated.
-Check the condition carefully before executing an update.
+### Important Points
 
-Basic Syntax
+* `SET` specifies the new values.
+* `WHERE` identifies the records to update.
+* Without `WHERE`, all records may be updated.
+* Always check the condition before executing an update.
 
+### Basic Syntax
+
+```sql
 UPDATE products
 SET price = 55000
 WHERE id = 1;
-12. Deleting Records — DELETE
+```
 
-What it is
+## 12. Deleting Records — DELETE
 
-DELETE removes records from a table.
+### What it is
 
-Important Points
+The `DELETE` statement removes records from a table.
 
-WHERE identifies which records to remove.
-Without WHERE, all records in the table may be deleted.
-Deleting a record can affect related records depending on foreign-key rules.
-Use conditions carefully.
+### Important Points
 
-Basic Syntax
+* `WHERE` identifies the records to remove.
+* Without `WHERE`, all records in the table may be deleted.
+* Related records may be affected by foreign-key rules.
+* Check the condition carefully before deleting data.
 
+### Basic Syntax
+
+```sql
 DELETE FROM products
 WHERE id = 1;
-13. Using Conditions — AND, OR, NOT
+```
 
-What it is
+## 13. Using Conditions — AND, OR, NOT
 
-Logical operators combine or reverse conditions in a query.
+### What it is
 
-Important Points
+Logical operators combine conditions or reverse a condition in a SQL query.
 
-AND requires all conditions to be true.
-OR requires at least one condition to be true.
-NOT reverses a condition.
-Parentheses can make complex conditions easier to understand.
+### Important Points
 
-Basic Syntax
+* `AND` requires all conditions to be true.
+* `OR` requires at least one condition to be true.
+* `NOT` reverses a condition.
+* Parentheses help group conditions clearly.
 
+### Basic Syntax
+
+```sql
 SELECT *
 FROM products
 WHERE price > 1000 AND stock > 0;
-14. Aggregate Functions
+```
 
-What it is
+### Using OR
+
+```sql
+SELECT *
+FROM products
+WHERE name = 'Laptop' OR name = 'Mouse';
+```
+
+### Using NOT
+
+```sql
+SELECT *
+FROM products
+WHERE NOT price > 1000;
+```
+
+## 14. Aggregate Functions
+
+### What it is
 
 Aggregate functions calculate a single result from multiple records.
 
-Important Points
+### Important Points
 
-COUNT() counts records or non-NULL values.
-SUM() calculates a total.
-AVG() calculates an average.
-MIN() finds the smallest value.
-MAX() finds the largest value.
-Most aggregate functions ignore NULL values.
+* `COUNT()` counts records or non-NULL values.
+* `SUM()` calculates a total.
+* `AVG()` calculates an average.
+* `MIN()` finds the smallest value.
+* `MAX()` finds the largest value.
+* Most aggregate functions ignore `NULL` values.
 
-Basic Syntax
+### Basic Syntax
 
-SELECT COUNT(*) FROM products;
+```sql
+SELECT COUNT(*)
+FROM products;
+```
 
-SELECT SUM(price) FROM products;
+### Calculating a Total
 
-SELECT AVG(price) FROM products;
-15. Grouping Records — GROUP BY and HAVING
+```sql
+SELECT SUM(price)
+FROM products;
+```
 
-What it is
+### Calculating an Average
 
-GROUP BY groups records with matching values, while HAVING filters the resulting groups.
+```sql
+SELECT AVG(price)
+FROM products;
+```
 
-Important Points
+## 15. Grouping Records — GROUP BY and HAVING
 
-Use GROUP BY for category-wise summaries.
-Combine grouping with aggregate functions.
-WHERE filters rows before grouping.
-HAVING filters groups after aggregation.
+### What it is
 
-Basic Syntax
+`GROUP BY` groups records with matching values, while `HAVING` filters the resulting groups.
 
+### Important Points
+
+* `GROUP BY` is useful for category-wise summaries.
+* It is commonly used with aggregate functions.
+* `WHERE` filters individual rows before grouping.
+* `HAVING` filters groups after aggregation.
+* Grouped queries can calculate counts, totals, and averages.
+
+### Basic Syntax
+
+```sql
+SELECT category, COUNT(*) AS total
+FROM products
+GROUP BY category;
+```
+
+### Using HAVING
+
+```sql
 SELECT category, COUNT(*) AS total
 FROM products
 GROUP BY category
 HAVING COUNT(*) > 1;
-16. Joining Tables
+```
 
-What it is
+## 16. Joining Tables — JOIN
 
-A JOIN combines related records from multiple tables.
+### What it is
 
-Important Points
+A `JOIN` combines related records from two or more tables.
 
-INNER JOIN returns matching records from both tables.
-LEFT JOIN returns all records from the left table and matching records from the right.
-Unmatched right-side values in a LEFT JOIN appear as NULL.
-Join conditions commonly use primary and foreign keys.
+### Important Points
 
-Basic Syntax
+* `INNER JOIN` returns records with matching values in both tables.
+* `LEFT JOIN` returns all records from the left table and matching records from the right table.
+* Unmatched columns from the right table contain `NULL`.
+* Join conditions commonly use primary and foreign keys.
+* Use table aliases to make queries easier to read.
 
-SELECT orders.id, customers.name
-FROM orders
-INNER JOIN customers
-ON orders.customer_id = customers.id;
-17. Relationships Between Tables
+### Example Tables
 
-What it is
+```text
+customers
+----------------
+id    name
+1     Sam
+2     Alex
+
+orders
+-------------------------
+id    customer_id    total
+1     1              2000
+2     1              500
+```
+
+### Basic Syntax
+
+```sql
+SELECT customers.name, orders.total
+FROM customers
+INNER JOIN orders
+ON customers.id = orders.customer_id;
+```
+
+### Using LEFT JOIN
+
+```sql
+SELECT customers.name, orders.total
+FROM customers
+LEFT JOIN orders
+ON customers.id = orders.customer_id;
+```
+
+## 17. Relationships Between Tables
+
+### What it is
 
 Relationships describe how records in different tables are connected.
 
-Important Points
+### Important Points
 
-One-to-one: one record relates to one record.
-One-to-many: one record relates to multiple records.
-Many-to-many: multiple records relate to multiple records.
-Foreign keys represent relationships.
-Many-to-many relationships usually require a junction table.
+* **One-to-one:** one record relates to at most one record in another table.
+* **One-to-many:** one record relates to multiple records in another table.
+* **Many-to-many:** multiple records relate to multiple records in another table.
+* Foreign keys represent relationships between tables.
+* Many-to-many relationships usually require a junction table.
 
-Example
+### Example
 
-customers
----------
-id
-name
+```sql
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY,
+    customer_id INTEGER,
+    total REAL,
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+```
 
-orders
-------
-id
-customer_id
-total
+## 18. Creating and Managing an Inventory Database
 
-One customer can have multiple orders.
+### What it is
 
-18. Creating and Managing an Inventory Database
+An inventory database stores information about products, prices, and available stock.
 
-What it is
+### Important Points
 
-An inventory database stores information about products and their available stock.
+* Each product should have a unique ID.
+* Product names should be required where appropriate.
+* Prices and stock quantities should be validated.
+* Queries can search for products and summarize inventory.
+* Updates should keep stock quantities accurate.
 
-Important Points
+### Basic Syntax
 
-Store product names, prices, and stock quantities.
-Use unique IDs to identify products.
-Validate prices and quantities.
-Update stock when inventory changes.
-Use queries to search and summarize products.
-
-Basic Syntax
-
-CREATE TABLE products (
+```sql
+CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     price REAL CHECK(price >= 0),
     stock INTEGER CHECK(stock >= 0)
 );
-19. Executing SQL Manually and Through Python
+```
 
-What it is
+### Adding a Product
 
-SQL can be executed using a database tool or through a Python program.
+```sql
+INSERT INTO products (name, price, stock)
+VALUES ('Laptop', 50000, 10);
+```
 
-Important Points
+### Viewing Available Stock
 
-Manual execution is useful for learning and inspecting data.
-Python can automate database operations.
-SQL statements remain mostly the same in both cases.
-Python's sqlite3 module connects the application to SQLite.
+```sql
+SELECT name, stock
+FROM products
+WHERE stock > 0;
+```
+
+### Updating Stock
+
+```sql
+UPDATE products
+SET stock = 8
+WHERE id = 1;
+```
+
+## 19. Executing SQL Manually and Through Python
+
+### What it is
+
+SQL statements can be executed manually using a database tool or automatically through a Python program.
+
+### Important Points
+
+* Manual SQL execution is useful for learning and checking data.
+* Python can automate database operations.
+* SQL commands remain mostly the same in both approaches.
+* Python's `sqlite3` module connects Python programs to SQLite databases.
+* User-provided values should be passed through parameterized queries when using Python.
+
+### Basic Syntax
+
+```python
+import sqlite3
+
+connection = sqlite3.connect("inventory.db")
+cursor = connection.cursor()
+
+cursor.execute("SELECT * FROM products")
+
+products = cursor.fetchall()
+
+for product in products:
+    print(product)
+
+connection.close()
+```
+
+## 20. Important SQL Best Practices
+
+### Important Points
+
+* Use meaningful table and column names.
+* Define primary keys for tables.
+* Use foreign keys to maintain relationships.
+* Use `WHERE` carefully with `UPDATE` and `DELETE`.
+* Use constraints to prevent invalid data.
+* Use `JOIN` to retrieve related information.
+* Use aggregate functions for summaries.
+* Use parameterized queries for user-provided values in Python.
+* Keep queries readable and organized.
