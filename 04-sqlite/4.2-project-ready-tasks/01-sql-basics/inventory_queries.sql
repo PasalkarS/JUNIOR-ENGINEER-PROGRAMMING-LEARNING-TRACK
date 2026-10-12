@@ -1,4 +1,3 @@
-
 -- 1. Display all products
 SELECT * FROM products;
 
