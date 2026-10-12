@@ -455,28 +455,4 @@ A clean history makes project changes easier to understand.
 - Do not assume local commits are available on GitHub.
 - Test changes after merging or rebasing.
 
-## 18. Branching Best Practices
 
-- Create a separate branch for each independent task.
-- Use descriptive branch names.
-- Start from the correct base branch.
-- Make small, focused commits.
-- Review changes before committing.
-- Fetch updates regularly when working with others.
-- Keep feature branches current using the team's preferred method.
-- Push branches when they are ready to be shared.
-- Avoid rewriting shared history without agreement.
-- Test changes before merging.
-- Delete branches only when their work is no longer needed.
-
-## 19. Branching Completion Checklist
-
-- [ ] Can create, list, switch, and delete branches.
-- [ ] Can use descriptive branch names.
-- [ ] Can make small and focused commits.
-- [ ] Can inspect changes using `git diff`.
-- [ ] Can fetch and integrate remote changes.
-- [ ] Can push a feature branch to GitHub.
-- [ ] Can explain the difference between merge and rebase.
-- [ ] Can maintain three independent tasks using separate branches.
-- [ ] Can keep repository history organized and understandable.
