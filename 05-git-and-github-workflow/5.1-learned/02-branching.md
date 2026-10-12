@@ -1,4 +1,4 @@
-# 13.2 — Branching
+# 2 — Branching
 
 ## 1. Introduction to Branching
 
