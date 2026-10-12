@@ -1,4 +1,4 @@
-# 13.5 — Conflict Resolution
+# 5 — Conflict Resolution
 
 ## 1. Introduction to Git Conflicts
 
