@@ -1,4 +1,4 @@
-```sql
+
 CREATE TABLE categories (
     category_id INTEGER PRIMARY KEY,
     category_name TEXT NOT NULL UNIQUE
@@ -25,4 +25,3 @@ VALUES
     ('Mouse', 1, 25, 399.00),
     ('Notebook', 2, 50, 60.00),
     ('Office Chair', 3, 8, 4500.00);
-```
