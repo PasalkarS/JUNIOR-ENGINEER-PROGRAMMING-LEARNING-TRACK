@@ -1,4 +1,4 @@
-# 13.1 — Git Basics
+# 1 — Git Basics
 
 ## 1. Introduction to Git
 
